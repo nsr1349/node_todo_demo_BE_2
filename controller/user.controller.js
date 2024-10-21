@@ -8,6 +8,9 @@ userController.createUser = async (req, res) => {
     try {
         const { email , name, password } = req.body 
         if (!email || !name || !password ) throw new Error('모든 칸을 입력해줘')
+        if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i.test(email)) throw new Error('이거 이메일 아니야')
+        if (!/^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/.test(name)) throw new Error('닉네임은 영어, 한글, 숫자만이야')
+        if (!/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/.test(password)) throw new Error('비밀번호는 영어, 숫자 조합 8자리 이상으로..')
         const user = await User.findOne({ email })
 
         if (user) throw new Error('이미 가입되어 있엉')
@@ -39,6 +42,5 @@ userController.loginWithEmail = async (req, res) => {
         res.status(400).json({status : 'fail', err : message})
     }
 }
-
 
 module.exports = userController
