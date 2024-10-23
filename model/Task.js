@@ -11,8 +11,9 @@ const taskSchema = Schema({
             require : true
         },
         author : {
-            type : Schema.Types.ObjectId,
-            require : true
+            type : Schema.Types.ObjectId, 
+            require : true,
+            ref : "User"
         },
     },
     { timestamps : true }
