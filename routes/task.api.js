@@ -9,10 +9,10 @@ router.get('/', getTask)
 
 router.get('/:userId', getTask)
 
-router.put('/:id', updateTask)
+router.put('/:id', authenticate, updateTask)
 
-router.delete('/:id', deleteTask)
+router.delete('/:id', authenticate, deleteTask)
 
-router.delete('/', deleteAllTask)
+router.delete('/', authenticate, deleteAllTask)
 
 module.exports = router

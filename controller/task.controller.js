@@ -1,4 +1,6 @@
 const Task = require('../model/Task')
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 const taskController = {}
 
@@ -26,25 +28,32 @@ taskController.getTask = async (req, res) => {
 
 taskController.updateTask = async (req, res) => {
     try {
+        const targetTask = await Task.findOne({ _id : req.params.id } ).populate('author')
+        const targetId = targetTask.author._id.toString()
+        if (targetId !== req.userId) throw new Error('자신의 할일만 수정 가능합니다')
+
         const { task, isComplete } = req.body;
         const data = await Task.findByIdAndUpdate(
             req.params.id,
             { task, isComplete }
         );
         if (!data) return res.status(404).json({ status: 'fail', message: 'Task not found' })
-
-        res.status(200).json({ status: 'ok', data })
+        res.status(200).json({ status: 'success', data })
     } catch (err) {
-        res.status(400).json({ status: 'fail', err })
+        res.status(400).json({ status: 'fail', err : err.message })
     }
 };
 
 taskController.deleteTask = async (req, res) => {
     try {
+        const targetTask = await Task.findOne({ _id : req.params.id } ).populate('author')
+        const targetId = targetTask.author._id.toString()
+        if (targetId !== req.userId) throw new Error('자신의 할일만 삭제 가능합니다')
+
         const data = await Task.findByIdAndDelete(req.params.id)
         res.status(200).json({ status: 'ok', data })
     } catch (err) {
-        res.status(400).json({ status: 'fail', err })
+        res.status(400).json({ status: 'fail', err : err.message })
     }
 };
 
