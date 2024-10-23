@@ -25,6 +25,8 @@ const userSchema = Schema({
 userSchema.methods.toJSON = function () {
     const { _doc } = this
     delete _doc.password
+    delete _doc.updatedAt
+    delete _doc.__v
     return _doc
 }
 
